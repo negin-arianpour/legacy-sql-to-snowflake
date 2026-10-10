@@ -1,0 +1,82 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "emp_id",
+    "emp_name",
+    "depth",
+    "reporting_path",
+    "top_manager"
+  ],
+  "rows": [
+    [
+      1,
+      "Morgan Ellis",
+      1,
+      "/Morgan Ellis",
+      "Morgan Ellis"
+    ],
+    [
+      2,
+      "Ava Patel",
+      2,
+      "/Morgan Ellis/Ava Patel",
+      "Morgan Ellis"
+    ],
+    [
+      4,
+      "Chloe Nguyen",
+      3,
+      "/Morgan Ellis/Ava Patel/Chloe Nguyen",
+      "Morgan Ellis"
+    ],
+    [
+      7,
+      "Finn Walsh",
+      4,
+      "/Morgan Ellis/Ava Patel/Chloe Nguyen/Finn Walsh",
+      "Morgan Ellis"
+    ],
+    [
+      5,
+      "Dan Okafor",
+      3,
+      "/Morgan Ellis/Ava Patel/Dan Okafor",
+      "Morgan Ellis"
+    ],
+    [
+      3,
+      "Ben Carter",
+      2,
+      "/Morgan Ellis/Ben Carter",
+      "Morgan Ellis"
+    ],
+    [
+      6,
+      "Eve Rossi",
+      3,
+      "/Morgan Ellis/Ben Carter/Eve Rossi",
+      "Morgan Ellis"
+    ],
+    [
+      8,
+      "Grace Kim",
+      4,
+      "/Morgan Ellis/Ben Carter/Eve Rossi/Grace Kim",
+      "Morgan Ellis"
+    ],
+    [
+      9,
+      "Zara Quinn",
+      1,
+      "/Zara Quinn",
+      "Zara Quinn"
+    ],
+    [
+      10,
+      "Iris Bell",
+      2,
+      "/Zara Quinn/Iris Bell",
+      "Zara Quinn"
+    ]
+  ]
+}

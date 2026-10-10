@@ -1,0 +1,53 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "order_id",
+    "customer_name",
+    "order_month",
+    "status_label",
+    "net_value",
+    "rn"
+  ],
+  "rows": [
+    [
+      108,
+      "Acme Ltd",
+      "2025-04",
+      "Done",
+      "187.50",
+      6
+    ],
+    [
+      102,
+      "Brightway  ",
+      "2025-01",
+      "Done",
+      "171.94",
+      7
+    ],
+    [
+      111,
+      "Delta Retail",
+      "2025-05",
+      "Done",
+      "145.00",
+      8
+    ],
+    [
+      113,
+      "Cobalt Freight",
+      "2025-06",
+      "Other",
+      "135.20",
+      9
+    ],
+    [
+      109,
+      "Granite Group  ",
+      "2025-04",
+      "Waiting",
+      "134.75",
+      10
+    ]
+  ]
+}

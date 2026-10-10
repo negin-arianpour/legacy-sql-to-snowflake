@@ -1,0 +1,47 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "customer_id",
+    "customer_label",
+    "contact_email",
+    "gross_revenue",
+    "order_count"
+  ],
+  "rows": [
+    [
+      7,
+      "Granite Group   (Manchester)",
+      "admin@granite.com",
+      "592.75",
+      2
+    ],
+    [
+      6,
+      "Fjord Logistics (Felixstowe)",
+      "team@fjord.no",
+      "570.63",
+      3
+    ],
+    [
+      1,
+      "Acme Ltd (London)",
+      "info@acme.co.uk",
+      "520.50",
+      3
+    ],
+    [
+      3,
+      "Cobalt Freight (Ipswich)",
+      "n/a",
+      "439.20",
+      2
+    ],
+    [
+      5,
+      null,
+      "hello@evergreen.org",
+      "346.80",
+      1
+    ]
+  ]
+}

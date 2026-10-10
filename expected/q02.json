@@ -1,0 +1,47 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "order_month",
+    "orders_shipped",
+    "span_days",
+    "total_discount_pct"
+  ],
+  "rows": [
+    [
+      "2025-01",
+      2,
+      14,
+      5
+    ],
+    [
+      "2025-02",
+      1,
+      0,
+      10
+    ],
+    [
+      "2025-03",
+      2,
+      12,
+      0
+    ],
+    [
+      "2025-04",
+      1,
+      0,
+      0
+    ],
+    [
+      "2025-05",
+      2,
+      25,
+      5
+    ],
+    [
+      "2025-06",
+      2,
+      18,
+      0
+    ]
+  ]
+}

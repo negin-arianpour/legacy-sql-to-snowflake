@@ -1,0 +1,69 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "category",
+    "product_name",
+    "units_sold",
+    "revenue",
+    "sales_status",
+    "category_rank"
+  ],
+  "rows": [
+    [
+      "Equipment",
+      "Label Printer",
+      4,
+      "916.00",
+      "Active",
+      1
+    ],
+    [
+      "Equipment",
+      "Barcode Scanner",
+      4,
+      "594.97",
+      "Active",
+      2
+    ],
+    [
+      "Equipment",
+      "Forklift Battery",
+      0,
+      "0",
+      "Never sold",
+      3
+    ],
+    [
+      "Packaging",
+      "Pallet Wrap",
+      39,
+      "487.50",
+      "Active",
+      1
+    ],
+    [
+      "Packaging",
+      "Box Large",
+      106,
+      "339.20",
+      "Active",
+      2
+    ],
+    [
+      "Safety",
+      "Hi-Vis Vest",
+      52,
+      "403.00",
+      "Active",
+      1
+    ],
+    [
+      "Safety",
+      "Hard Hat",
+      13,
+      "239.20",
+      "Active",
+      2
+    ]
+  ]
+}

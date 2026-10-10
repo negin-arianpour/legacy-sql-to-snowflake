@@ -1,0 +1,215 @@
+<title>SQL Migration Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: test run scorecard. Summary tiles, then query matrix, then error log. */
+:root {
+  --bg: #f5f7f8; --surface: #ffffff; --fg: #17232b; --muted: #5b6b75; --line: #d9e1e5;
+  --accent: #0b6e8a; --pass: #1d7a4a; --pass-bg: #e3f3ea; --fail: #b3261e; --fail-bg: #fbe7e5;
+  --warn: #8a5a00; --warn-bg: #fbf0d9; --code-bg: #eef2f4;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f171c; --surface: #16222a; --fg: #e3eaee; --muted: #93a4ae; --line: #2a3a44;
+  --accent: #5cc3df; --pass: #6fd39b; --pass-bg: #163327; --fail: #ff8a80; --fail-bg: #3a1d1b;
+  --warn: #f2c063; --warn-bg: #3a2e14; --code-bg: #1d2c35; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f171c; --surface: #16222a; --fg: #e3eaee; --muted: #93a4ae; --line: #2a3a44;
+  --accent: #5cc3df; --pass: #6fd39b; --pass-bg: #163327; --fail: #ff8a80; --fail-bg: #3a1d1b;
+  --warn: #f2c063; --warn-bg: #3a2e14; --code-bg: #1d2c35; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--body); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 40px 20px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.1; }
+h2 { font-size: 1.35rem; margin-bottom: 14px; }
+h3 { font-size: 1rem; }
+.eyebrow { font: 500 .75rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+.lede { color: var(--muted); max-width: 68ch; margin: 10px 0 0; }
+code { font: .85em var(--mono); background: var(--code-bg); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+.scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.score { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 6px; min-width: 0; }
+.big { margin: 4px 0 0; font-family: var(--display); line-height: 1; }
+.big .num { font-size: 3.4rem; font-variant-numeric: tabular-nums; }
+.big .unit { font-size: 1.6rem; color: var(--muted); margin-left: 2px; }
+.sub, .meta { margin: 0; color: var(--muted); }
+.meta { font: .8rem var(--mono); }
+.strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px; margin: 8px 0 4px; }
+.seg { height: 10px; border-radius: 2px; }
+.seg.pass { background: var(--pass); } .seg.fail { background: var(--fail); } .seg.warn { background: var(--warn); }
+.tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 .72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.qid { font: 500 .8rem var(--mono); color: var(--accent); margin-right: 4px; }
+.dialect { font: .8rem var(--mono); color: var(--muted); }
+.traps { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px; }
+.traps li { font-size: .75rem; border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; color: var(--muted); }
+.pill { display: inline-block; font: 500 .75rem var(--mono); padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+.pill.pass { background: var(--pass-bg); color: var(--pass); }
+.pill.fail { background: var(--fail-bg); color: var(--fail); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.errs { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.err { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--fail); border-radius: 4px; padding: 14px 16px; min-width: 0; }
+.err.warn { border-left-color: var(--warn); }
+.err header { font-weight: 500; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.err .who { font: .75rem var(--mono); color: var(--muted); margin-left: auto; }
+.err .cat { margin: 8px 0 2px; font: 600 .85rem var(--display); color: var(--fail); }
+.err.warn .cat { color: var(--warn); }
+.err .msg { margin: 0; font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+.diffs { margin: 8px 0 0; padding-left: 18px; font-size: .82rem; display: grid; gap: 3px; }
+.method { color: var(--muted); max-width: 75ch; margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.method strong { color: var(--fg); font-weight: 500; }
+</style>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">pytest run · 10 Oct 2026 10:58</p>
+    <h1>Legacy SQL to Snowflake conversion accuracy</h1>
+    <p class="lede">8 legacy queries (5 T-SQL, 3 Oracle) were converted by an LLM and by a rule based
+    transpiler, run on the same sample data, and compared cell by cell with the legacy output.</p>
+  </header>
+
+  <div class="scores">
+        <section class="score">
+          <h3>LLM (Claude)</h3>
+          <p class="big"><span class="num">100</span><span class="unit">%</span></p>
+          <p class="sub">8 of 8 verifiable queries identical</p>
+          <div class="strip" aria-label="per query result"><span class="seg pass" title="Q01: PASS"></span><span class="seg pass" title="Q02: PASS"></span><span class="seg pass" title="Q03: PASS"></span><span class="seg pass" title="Q04: PASS"></span><span class="seg pass" title="Q05: PASS"></span><span class="seg pass" title="Q06: PASS"></span><span class="seg pass" title="Q07: PASS"></span><span class="seg pass" title="Q08: PASS"></span></div>
+          <p class="meta">pytest: 40 passed · 0 failed · 0 skipped</p>
+        </section>
+        <section class="score">
+          <h3>Rule based baseline (sqlglot)</h3>
+          <p class="big"><span class="num">0</span><span class="unit">%</span></p>
+          <p class="sub">0 of 7 verifiable queries identical · 1 not verifiable locally</p>
+          <div class="strip" aria-label="per query result"><span class="seg fail" title="Q01: FAIL"></span><span class="seg fail" title="Q02: FAIL"></span><span class="seg fail" title="Q03: FAIL"></span><span class="seg fail" title="Q04: FAIL"></span><span class="seg fail" title="Q05: FAIL"></span><span class="seg fail" title="Q06: FAIL"></span><span class="seg fail" title="Q07: FAIL"></span><span class="seg warn" title="Q08: NOT VERIFIABLE"></span></div>
+          <p class="meta">pytest: 7 passed · 7 failed · 26 skipped</p>
+        </section></div>
+
+  <section>
+    <h2>Results by query</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Query</th><th>Source</th><th>Dialect traps in source</th><th>LLM</th><th>Baseline</th></tr></thead>
+      <tbody><tr>
+          <td><span class="qid">Q01</span> Top 5 customers by gross revenue</td>
+          <td><span class="dialect">tsql</span></td>
+          <td><ul class="traps"><li>TOP n row limit</li><li>+ string concatenation</li><li>ISNULL</li><li>string comparison (case insensitive collation)</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">execution error</span></td></tr><tr>
+          <td><span class="qid">Q02</span> Shipped orders per month, first half of 2025</td>
+          <td><span class="dialect">tsql</span></td>
+          <td><ul class="traps"><li>ISNULL</li><li>CONVERT with style code</li><li>string comparison (case insensitive collation)</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">row count mismatch</span></td></tr><tr>
+          <td><span class="qid">Q03</span> Basket statistics per product category</td>
+          <td><span class="dialect">tsql</span></td>
+          <td><ul class="traps"><li>integer division</li><li>AVG over an integer column</li><li>CAST to INT (truncation)</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">value mismatch</span></td></tr><tr>
+          <td><span class="qid">Q04</span> Most recent order for each customer</td>
+          <td><span class="dialect">tsql</span></td>
+          <td><ul class="traps"><li>TOP n row limit</li><li>CROSS APPLY</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">snowflake restriction</span></td></tr><tr>
+          <td><span class="qid">Q05</span> Contact data quality check for London customers</td>
+          <td><span class="dialect">tsql</span></td>
+          <td><ul class="traps"><li>string comparison (case insensitive collation)</li><li>LEN ignores trailing spaces</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">row count mismatch</span></td></tr><tr>
+          <td><span class="qid">Q06</span> Second page (rows 6 to 10) of orders ranked by net value</td>
+          <td><span class="dialect">oracle</span></td>
+          <td><ul class="traps"><li>ROWNUM pagination</li><li>DECODE</li><li>NVL / NVL2</li><li>TO_CHAR date mask</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">execution error</span></td></tr><tr>
+          <td><span class="qid">Q07</span> Organisation chart with reporting paths</td>
+          <td><span class="dialect">oracle</span></td>
+          <td><ul class="traps"><li>CONNECT BY hierarchy</li><li>ORDER SIBLINGS BY</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill fail">execution error</span></td></tr><tr>
+          <td><span class="qid">Q08</span> Product sales ranked within category (including unsold products)</td>
+          <td><span class="dialect">oracle</span></td>
+          <td><ul class="traps"><li>(+) outer join</li><li>NVL / NVL2</li></ul></td>
+          <td><span class="pill pass">Pass</span></td>
+          <td><span class="pill warn">Not verifiable</span></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Errors caught by the checks</h2>
+    <div class="errs"><article class="err fail">
+          <header><span class="qid">Q01</span> Top 5 customers by gross revenue
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Converted SQL failed to run on Snowflake</p>
+          <p class="msg">002043 (02000): Binder Error: No function matches the given name and argument types &#x27;+(VARCHAR, STRING_LITERAL)&#x27;. You might need to add explicit type casts. Candidate functions: +(TINYINT) -&gt; TINYINT +(TINYINT, TINYINT) -&gt; TINYINT +(SMALLINT) -&gt; SMALLINT +(SMALLINT, SMALLINT) -&gt; SMALLINT +(INTEGER) </p>
+          
+        </article><article class="err fail">
+          <header><span class="qid">Q02</span> Shipped orders per month, first half of 2025
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Different number of rows</p>
+          <p class="msg">expected 6 rows, got 1</p>
+          <ul class="diffs"><li>missing: <code>[[&#x27;2025-01&#x27;, 2.0, 14.0, 5.0], [&#x27;2025-02&#x27;, 1.0, 0.0, 10.0], [&#x27;2025-03&#x27;, 2.0, 12.0, 0.0]]</code></li><li>unexpected: <code>[[None, 9.0, 160.0, 20.0]]</code></li></ul>
+        </article><article class="err fail">
+          <header><span class="qid">Q03</span> Basket statistics per product category
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Same shape, different values</p>
+          <p class="msg">8 of 15 cells differ (columns: avg_line_quantity, avg_price_whole, avg_units_per_order)</p>
+          <ul class="diffs"><li>row 1 · <code>avg_units_per_order</code> expected <code>1.0</code> got <code>1.6</code></li><li>row 1 · <code>avg_line_quantity</code> expected <code>1.0</code> got <code>1.3333333333333333</code></li><li>row 1 · <code>avg_price_whole</code> expected <code>188.0</code> got <code>189.0</code></li><li>row 2 · <code>avg_units_per_order</code> expected <code>24.0</code> got <code>24.166666666666668</code></li></ul>
+        </article><article class="err fail">
+          <header><span class="qid">Q04</span> Most recent order for each customer
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Uses a construct real Snowflake rejects (emulator would accept it)</p>
+          <p class="msg">LIMIT inside a correlated LATERAL subquery: Snowflake allows LIMIT / FETCH only in uncorrelated scalar subqueries (docs: Working with Subqueries)</p>
+          
+        </article><article class="err fail">
+          <header><span class="qid">Q05</span> Contact data quality check for London customers
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Different number of rows</p>
+          <p class="msg">expected 3 rows, got 1</p>
+          <ul class="diffs"><li>missing: <code>[[1.0, &#x27;Acme Ltd&#x27;, 8.0, 5.0, &#x27;acme.co.uk&#x27;, &#x27;ok&#x27;], [2.0, &#x27;Brightway  &#x27;, 9.0, 6.0, &#x27;brightway.com&#x27;, &#x27;missing&#x27;], [4.0, &#x27;Delta Retail&#x27;, 12.0, 4.0, &#x27;delta.io&#x27;, &#x27;ok&#x27;]]</code></li><li>unexpected: <code>[[2.0, &#x27;Brightway  &#x27;, 11.0, 6.0, &#x27;brightway.com&#x27;, &#x27;missing&#x27;]]</code></li></ul>
+        </article><article class="err fail">
+          <header><span class="qid">Q06</span> Second page (rows 6 to 10) of orders ranked by net value
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Converted SQL failed to run on Snowflake</p>
+          <p class="msg">002043 (02000): Binder Error: Referenced column &quot;ROWNUM&quot; not found in FROM clause! Candidate bindings: &quot;NET_VALUE&quot; LINE 1: ... ORDER BY NET_VALUE DESC NULLS FIRST, O.ORDER_ID) AS A WHERE ROWNUM &lt;= 10) WHERE RN &gt; 5 ORDER BY RN ^</p>
+          
+        </article><article class="err fail">
+          <header><span class="qid">Q07</span> Organisation chart with reporting paths
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Converted SQL failed to run on Snowflake</p>
+          <p class="msg">001003 (42000): Invalid expression / Unexpected token. Line 11, Col: 5. me AS top_manager FROM employees START WITH manager_id IS NULL CONNECT BY PRIOR emp_id = manager_id ORDER SIBLINGS BY emp_name</p>
+          
+        </article><article class="err warn">
+          <header><span class="qid">Q08</span> Product sales ranked within category (including unsold products)
+            <span class="who">Rule based baseline (sqlglot)</span></header>
+          <p class="cat">Not verifiable on the local emulator</p>
+          <p class="msg">local run differs (expected 7 rows, got 6); Oracle style (+) outer join: valid in Snowflake, but the emulator treats it as an inner join. Rerun against a real Snowflake account to verify.</p>
+          <ul class="diffs"><li>missing: <code>[[&#x27;Equipment&#x27;, &#x27;Forklift Battery&#x27;, 0.0, 0.0, &#x27;Never sold&#x27;, 3.0]]</code></li></ul>
+        </article></div>
+  </section>
+
+  <section>
+    <h2>Negative controls: 10 of 10 injected bugs caught</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Injected migration bug</th><th>Query</th><th>Result</th></tr></thead>
+      <tbody><tr><td>T-SQL integer division left as decimal division</td><td><span class='qid'>Q03</span></td><td><span class="pill pass">caught</span> <code>value_mismatch</code></td></tr><tr><td>CAST to INT rounds in Snowflake instead of truncating</td><td><span class='qid'>Q03</span></td><td><span class="pill pass">caught</span> <code>value_mismatch</code></td></tr><tr><td>case insensitive collation lost</td><td><span class='qid'>Q05</span></td><td><span class="pill pass">caught</span> <code>row_count_mismatch</code></td></tr><tr><td>LEN replaced by LENGTH without RTRIM</td><td><span class='qid'>Q05</span></td><td><span class="pill pass">caught</span> <code>value_mismatch</code></td></tr><tr><td>&#x27;Shipped&#x27; no longer matches after migration</td><td><span class='qid'>Q02</span></td><td><span class="pill pass">caught</span> <code>value_mismatch</code></td></tr><tr><td>(+) outer join converted to an inner join</td><td><span class='qid'>Q08</span></td><td><span class="pill pass">caught</span> <code>row_count_mismatch</code></td></tr><tr><td>row limit changed</td><td><span class='qid'>Q01</span></td><td><span class="pill pass">caught</span> <code>row_count_mismatch</code></td></tr><tr><td>ORDER SIBLINGS BY emulated with the wrong sort</td><td><span class='qid'>Q07</span></td><td><span class="pill pass">caught</span> <code>row_order_mismatch</code></td></tr><tr><td>off by one page boundary when replacing ROWNUM</td><td><span class='qid'>Q06</span></td><td><span class="pill pass">caught</span> <code>value_mismatch</code></td></tr><tr><td>CROSS APPLY converted as OUTER APPLY (keeps customers without orders)</td><td><span class='qid'>Q04</span></td><td><span class="pill pass">caught</span> <code>row_count_mismatch</code></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Method and limitations</h2>
+    <ul class="method">
+      <li><strong>Legacy side.</strong> Expected outputs are computed by a reimplementation of each query that follows the
+      source engine's documented semantics (integer division, case insensitive collation, LEN, CAST truncation, CONNECT BY order).
+      Real SQL Server or Oracle output can replace them via <code>harness/capture_legacy.py</code>.</li>
+      <li><strong>Snowflake side.</strong> Converted SQL runs on fakesnow (local Snowflake emulator on DuckDB).</li>
+      <li><strong>Accuracy.</strong> A query counts as accurate only when columns, row count, every value (numeric tolerance 1e-6)
+      and row order all match.</li>
+      <li><strong>Emulator shims</strong> (no op on real Snowflake, applied to both converters): Q02: TO_CHAR(o.order_date, ...) input cast to DATE; Q06: TO_CHAR(o.order_date, ...) input cast to DATE.</li>
+      <li><strong>Not verifiable locally</strong> means valid Snowflake syntax the emulator cannot execute faithfully; it is
+      excluded from the accuracy denominator.</li>
+      <li><strong>Documentation.</strong> 8 of 8 generated documents contain every required section.</li>
+    </ul>
+  </section>
+</div>

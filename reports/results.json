@@ -1,0 +1,417 @@
+[
+  {
+    "converter": "baseline",
+    "qid": "q01",
+    "name": "q01_top_customers",
+    "dialect": "tsql",
+    "title": "Top 5 customers by gross revenue",
+    "passed": false,
+    "category": "execution_error",
+    "message": "002043 (02000): Binder Error: No function matches the given name and argument types '+(VARCHAR, STRING_LITERAL)'. You might need to add explicit type casts. Candidate functions: +(TINYINT) -> TINYINT +(TINYINT, TINYINT) -> TINYINT +(SMALLINT) -> SMALLINT +(SMALLINT, SMALLINT) -> SMALLINT +(INTEGER) ",
+    "expected_rows": 5,
+    "actual_rows": null,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q02",
+    "name": "q02_monthly_shipments",
+    "dialect": "tsql",
+    "title": "Shipped orders per month, first half of 2025",
+    "passed": false,
+    "category": "row_count_mismatch",
+    "message": "expected 6 rows, got 1",
+    "expected_rows": 6,
+    "actual_rows": 1,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [
+      {
+        "missing_rows": [
+          [
+            "2025-01",
+            2.0,
+            14.0,
+            5.0
+          ],
+          [
+            "2025-02",
+            1.0,
+            0.0,
+            10.0
+          ],
+          [
+            "2025-03",
+            2.0,
+            12.0,
+            0.0
+          ]
+        ],
+        "unexpected_rows": [
+          [
+            null,
+            9.0,
+            160.0,
+            20.0
+          ]
+        ]
+      }
+    ],
+    "emulator_shims": [
+      "TO_CHAR(o.order_date, ...) input cast to DATE",
+      "TO_CHAR(o.order_date, ...) input cast to DATE"
+    ],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q03",
+    "name": "q03_category_basket_stats",
+    "dialect": "tsql",
+    "title": "Basket statistics per product category",
+    "passed": false,
+    "category": "value_mismatch",
+    "message": "8 of 15 cells differ (columns: avg_line_quantity, avg_price_whole, avg_units_per_order)",
+    "expected_rows": 3,
+    "actual_rows": 3,
+    "cells_checked": 15,
+    "cells_matching": 7,
+    "diffs": [
+      {
+        "row": 1,
+        "column": "avg_units_per_order",
+        "expected": 1.0,
+        "actual": 1.6
+      },
+      {
+        "row": 1,
+        "column": "avg_line_quantity",
+        "expected": 1.0,
+        "actual": 1.3333333333333333
+      },
+      {
+        "row": 1,
+        "column": "avg_price_whole",
+        "expected": 188.0,
+        "actual": 189.0
+      },
+      {
+        "row": 2,
+        "column": "avg_units_per_order",
+        "expected": 24.0,
+        "actual": 24.166666666666668
+      },
+      {
+        "row": 2,
+        "column": "avg_line_quantity",
+        "expected": 18.0,
+        "actual": 18.125
+      },
+      {
+        "row": 2,
+        "column": "avg_price_whole",
+        "expected": 7.0,
+        "actual": 8.0
+      },
+      {
+        "row": 3,
+        "column": "avg_units_per_order",
+        "expected": 9.0,
+        "actual": 9.285714285714286
+      },
+      {
+        "row": 3,
+        "column": "avg_line_quantity",
+        "expected": 8.0,
+        "actual": 8.125
+      }
+    ],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q04",
+    "name": "q04_latest_order_per_customer",
+    "dialect": "tsql",
+    "title": "Most recent order for each customer",
+    "passed": false,
+    "category": "snowflake_restriction",
+    "message": "LIMIT inside a correlated LATERAL subquery: Snowflake allows LIMIT / FETCH only in uncorrelated scalar subqueries (docs: Working with Subqueries)",
+    "expected_rows": 7,
+    "actual_rows": null,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q05",
+    "name": "q05_london_contact_quality",
+    "dialect": "tsql",
+    "title": "Contact data quality check for London customers",
+    "passed": false,
+    "category": "row_count_mismatch",
+    "message": "expected 3 rows, got 1",
+    "expected_rows": 3,
+    "actual_rows": 1,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [
+      {
+        "missing_rows": [
+          [
+            1.0,
+            "Acme Ltd",
+            8.0,
+            5.0,
+            "acme.co.uk",
+            "ok"
+          ],
+          [
+            2.0,
+            "Brightway  ",
+            9.0,
+            6.0,
+            "brightway.com",
+            "missing"
+          ],
+          [
+            4.0,
+            "Delta Retail",
+            12.0,
+            4.0,
+            "delta.io",
+            "ok"
+          ]
+        ],
+        "unexpected_rows": [
+          [
+            2.0,
+            "Brightway  ",
+            11.0,
+            6.0,
+            "brightway.com",
+            "missing"
+          ]
+        ]
+      }
+    ],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q06",
+    "name": "q06_order_pagination",
+    "dialect": "oracle",
+    "title": "Second page (rows 6 to 10) of orders ranked by net value",
+    "passed": false,
+    "category": "execution_error",
+    "message": "002043 (02000): Binder Error: Referenced column \"ROWNUM\" not found in FROM clause! Candidate bindings: \"NET_VALUE\" LINE 1: ... ORDER BY NET_VALUE DESC NULLS FIRST, O.ORDER_ID) AS A WHERE ROWNUM <= 10) WHERE RN > 5 ORDER BY RN ^",
+    "expected_rows": 5,
+    "actual_rows": null,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q07",
+    "name": "q07_org_chart",
+    "dialect": "oracle",
+    "title": "Organisation chart with reporting paths",
+    "passed": false,
+    "category": "execution_error",
+    "message": "001003 (42000): Invalid expression / Unexpected token. Line 11, Col: 5. me AS top_manager FROM employees START WITH manager_id IS NULL CONNECT BY PRIOR emp_id = manager_id ORDER SIBLINGS BY emp_name",
+    "expected_rows": 10,
+    "actual_rows": null,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "baseline",
+    "qid": "q08",
+    "name": "q08_product_sales_rank",
+    "dialect": "oracle",
+    "title": "Product sales ranked within category (including unsold products)",
+    "passed": null,
+    "category": "not_verifiable_locally",
+    "message": "local run differs (expected 7 rows, got 6); Oracle style (+) outer join: valid in Snowflake, but the emulator treats it as an inner join. Rerun against a real Snowflake account to verify.",
+    "expected_rows": 7,
+    "actual_rows": 6,
+    "cells_checked": 0,
+    "cells_matching": 0,
+    "diffs": [
+      {
+        "missing_rows": [
+          [
+            "Equipment",
+            "Forklift Battery",
+            0.0,
+            0.0,
+            "Never sold",
+            3.0
+          ]
+        ],
+        "unexpected_rows": []
+      }
+    ],
+    "emulator_shims": [],
+    "emulator_gaps": [
+      "Oracle style (+) outer join: valid in Snowflake, but the emulator treats it as an inner join"
+    ]
+  },
+  {
+    "converter": "llm",
+    "qid": "q01",
+    "name": "q01_top_customers",
+    "dialect": "tsql",
+    "title": "Top 5 customers by gross revenue",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 5,
+    "actual_rows": 5,
+    "cells_checked": 25,
+    "cells_matching": 25,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q02",
+    "name": "q02_monthly_shipments",
+    "dialect": "tsql",
+    "title": "Shipped orders per month, first half of 2025",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 6,
+    "actual_rows": 6,
+    "cells_checked": 24,
+    "cells_matching": 24,
+    "diffs": [],
+    "emulator_shims": [
+      "TO_CHAR(o.order_date, ...) input cast to DATE",
+      "TO_CHAR(o.order_date, ...) input cast to DATE"
+    ],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q03",
+    "name": "q03_category_basket_stats",
+    "dialect": "tsql",
+    "title": "Basket statistics per product category",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 3,
+    "actual_rows": 3,
+    "cells_checked": 15,
+    "cells_matching": 15,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q04",
+    "name": "q04_latest_order_per_customer",
+    "dialect": "tsql",
+    "title": "Most recent order for each customer",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 7,
+    "actual_rows": 7,
+    "cells_checked": 35,
+    "cells_matching": 35,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q05",
+    "name": "q05_london_contact_quality",
+    "dialect": "tsql",
+    "title": "Contact data quality check for London customers",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 3,
+    "actual_rows": 3,
+    "cells_checked": 18,
+    "cells_matching": 18,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q06",
+    "name": "q06_order_pagination",
+    "dialect": "oracle",
+    "title": "Second page (rows 6 to 10) of orders ranked by net value",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 5,
+    "actual_rows": 5,
+    "cells_checked": 30,
+    "cells_matching": 30,
+    "diffs": [],
+    "emulator_shims": [
+      "TO_CHAR(o.order_date, ...) input cast to DATE"
+    ],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q07",
+    "name": "q07_org_chart",
+    "dialect": "oracle",
+    "title": "Organisation chart with reporting paths",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 10,
+    "actual_rows": 10,
+    "cells_checked": 50,
+    "cells_matching": 50,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  },
+  {
+    "converter": "llm",
+    "qid": "q08",
+    "name": "q08_product_sales_rank",
+    "dialect": "oracle",
+    "title": "Product sales ranked within category (including unsold products)",
+    "passed": true,
+    "category": null,
+    "message": "identical",
+    "expected_rows": 7,
+    "actual_rows": 7,
+    "cells_checked": 42,
+    "cells_matching": 42,
+    "diffs": [],
+    "emulator_shims": [],
+    "emulator_gaps": []
+  }
+]

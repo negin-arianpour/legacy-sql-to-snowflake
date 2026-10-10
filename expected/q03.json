@@ -1,0 +1,33 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "category",
+    "orders_with_category",
+    "avg_units_per_order",
+    "avg_line_quantity",
+    "avg_price_whole"
+  ],
+  "rows": [
+    [
+      "Equipment",
+      5,
+      1,
+      1,
+      188
+    ],
+    [
+      "Packaging",
+      6,
+      24,
+      18,
+      7
+    ],
+    [
+      "Safety",
+      7,
+      9,
+      8,
+      13
+    ]
+  ]
+}

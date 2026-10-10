@@ -1,0 +1,61 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "customer_id",
+    "name",
+    "order_id",
+    "order_date",
+    "status"
+  ],
+  "rows": [
+    [
+      1,
+      "Acme Ltd",
+      108,
+      "2025-04-04",
+      "SHIPPED"
+    ],
+    [
+      2,
+      "Brightway  ",
+      110,
+      "2025-05-06",
+      "SHIPPED"
+    ],
+    [
+      3,
+      "Cobalt Freight",
+      113,
+      "2025-06-30",
+      "Shipped"
+    ],
+    [
+      4,
+      "Delta Retail",
+      111,
+      "2025-05-31",
+      "SHIPPED"
+    ],
+    [
+      5,
+      "Evergreen Co",
+      106,
+      "2025-03-09",
+      "SHIPPED"
+    ],
+    [
+      6,
+      "Fjord Logistics",
+      115,
+      "2025-06-12",
+      "SHIPPED"
+    ],
+    [
+      7,
+      "Granite Group  ",
+      114,
+      "2025-07-15",
+      "SHIPPED"
+    ]
+  ]
+}

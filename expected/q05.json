@@ -1,0 +1,37 @@
+{
+  "source": "reference implementation of legacy semantics (harness/legacy_reference.py)",
+  "columns": [
+    "customer_id",
+    "name",
+    "name_length",
+    "at_position",
+    "email_domain",
+    "phone_status"
+  ],
+  "rows": [
+    [
+      1,
+      "Acme Ltd",
+      8,
+      5,
+      "acme.co.uk",
+      "ok"
+    ],
+    [
+      2,
+      "Brightway  ",
+      9,
+      6,
+      "brightway.com",
+      "missing"
+    ],
+    [
+      4,
+      "Delta Retail",
+      12,
+      4,
+      "delta.io",
+      "ok"
+    ]
+  ]
+}

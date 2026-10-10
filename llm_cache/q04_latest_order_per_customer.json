@@ -1,0 +1,13 @@
+{
+  "snowflake_sql": "SELECT\n    c.customer_id,\n    c.name,\n    o.order_id,\n    o.order_date,\n    o.status\nFROM customers c\nJOIN orders o ON o.customer_id = c.customer_id\nQUALIFY ROW_NUMBER() OVER (\n    PARTITION BY c.customer_id\n    ORDER BY o.order_date DESC, o.order_id DESC\n) = 1\nORDER BY c.customer_id;",
+  "conversion_notes": [
+    "CROSS APPLY with TOP 1 rewritten as an inner join filtered with QUALIFY ROW_NUMBER() = 1.",
+    "Inner join keeps CROSS APPLY behaviour: customers with no orders are excluded.",
+    "Tie break on order_id DESC preserved."
+  ],
+  "documentation": "## Purpose\nReturns each customer's most recent order.\n\n## Inputs\n`customers`, `orders`.\n\n## Logic\n1. Join customers to their orders.\n2. Number each customer's orders from newest to oldest (order id breaks ties on the same date).\n3. Keep row number 1. Customers without orders do not appear.\n\n## Output columns\n| Column | Type | Description |\n|---|---|---|\n| customer_id | INTEGER | Customer key |\n| name | VARCHAR | Customer name |\n| order_id | INTEGER | Latest order |\n| order_date | DATE | Date of latest order |\n| status | VARCHAR | Status of latest order |\n\n## Conversion notes\n`QUALIFY` is the idiomatic Snowflake replacement for a correlated `TOP 1`. If `OUTER APPLY` had been used, a `LEFT JOIN` would be required instead.",
+  "model": "claude-opus-5-5",
+  "generated_at": "2026-10-10T09:40:00+00:00",
+  "prompt": "Source dialect: Microsoft SQL Server (T-SQL), default case insensitive collation\nQuery title: Most recent order for each customer\n\nTables available (identical structure in source and target):\n  customers(customer_id INTEGER, name VARCHAR(50), city VARCHAR(30), email VARCHAR(80), phone VARCHAR(20), created_date DATE)\n  products(product_id INTEGER, product_name VARCHAR(50), category VARCHAR(30), unit_price DECIMAL(10,2))\n  orders(order_id INTEGER, customer_id INTEGER, order_date DATE, status VARCHAR(20), discount_pct INTEGER)\n  order_items(order_id INTEGER, product_id INTEGER, quantity INTEGER, unit_price DECIMAL(10,2))\n  employees(emp_id INTEGER, emp_name VARCHAR(50), manager_id INTEGER, dept VARCHAR(20), salary INTEGER, hire_date DATE)\n\nConvert this query to Snowflake SQL:\n\n```sql\nSELECT\n    c.customer_id,\n    c.name,\n    lo.order_id,\n    lo.order_date,\n    lo.status\nFROM customers c\nCROSS APPLY (\n    SELECT TOP 1 o.order_id, o.order_date, o.status\n    FROM orders o\n    WHERE o.customer_id = c.customer_id\n    ORDER BY o.order_date DESC, o.order_id DESC\n) lo\nORDER BY c.customer_id;\n```\n",
+  "source": "Generated in a Claude session from converter/prompt.py; rerun with --live to regenerate via the API"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "int-division",
+    "query": "q03",
+    "simulates": "T-SQL integer division left as decimal division",
+    "expected_category": "value_mismatch",
+    "detected_as": "value_mismatch",
+    "message": "3 of 15 cells differ (columns: avg_units_per_order)"
+  },
+  {
+    "id": "cast-rounding",
+    "query": "q03",
+    "simulates": "CAST to INT rounds in Snowflake instead of truncating",
+    "expected_category": "value_mismatch",
+    "detected_as": "value_mismatch",
+    "message": "2 of 15 cells differ (columns: avg_price_whole)"
+  },
+  {
+    "id": "collation",
+    "query": "q05",
+    "simulates": "case insensitive collation lost",
+    "expected_category": "row_count_mismatch",
+    "detected_as": "row_count_mismatch",
+    "message": "expected 3 rows, got 1"
+  },
+  {
+    "id": "len-trailing-spaces",
+    "query": "q05",
+    "simulates": "LEN replaced by LENGTH without RTRIM",
+    "expected_category": "value_mismatch",
+    "detected_as": "value_mismatch",
+    "message": "1 of 18 cells differ (columns: name_length)"
+  },
+  {
+    "id": "status-case",
+    "query": "q02",
+    "simulates": "'Shipped' no longer matches after migration",
+    "expected_category": "value_mismatch",
+    "detected_as": "value_mismatch",
+    "message": "2 of 24 cells differ (columns: orders_shipped, span_days)"
+  },
+  {
+    "id": "outer-join-lost",
+    "query": "q08",
+    "simulates": "(+) outer join converted to an inner join",
+    "expected_category": "row_count_mismatch",
+    "detected_as": "row_count_mismatch",
+    "message": "expected 7 rows, got 6"
+  },
+  {
+    "id": "top-n",
+    "query": "q01",
+    "simulates": "row limit changed",
+    "expected_category": "row_count_mismatch",
+    "detected_as": "row_count_mismatch",
+    "message": "expected 5 rows, got 6"
+  },
+  {
+    "id": "sibling-order",
+    "query": "q07",
+    "simulates": "ORDER SIBLINGS BY emulated with the wrong sort",
+    "expected_category": "row_order_mismatch",
+    "detected_as": "row_order_mismatch",
+    "message": "same rows in a different order"
+  },
+  {
+    "id": "pagination-offset",
+    "query": "q06",
+    "simulates": "off by one page boundary when replacing ROWNUM",
+    "expected_category": "value_mismatch",
+    "detected_as": "value_mismatch",
+    "message": "14 of 30 cells differ (columns: customer_name, net_value, order_id, order_month, rn, status_label)"
+  },
+  {
+    "id": "cross-apply-as-outer",
+    "query": "q04",
+    "simulates": "CROSS APPLY converted as OUTER APPLY (keeps customers without orders)",
+    "expected_category": "row_count_mismatch",
+    "detected_as": "row_count_mismatch",
+    "message": "expected 7 rows, got 8"
+  }
+]
